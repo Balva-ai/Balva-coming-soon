@@ -3,319 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Balva — Coming Soon</title>
+  <title>Balva — Every Customer, Answered.</title>
+  <meta name="description" content="Balva is the AI-powered front-of-house for local service businesses. We catch your missed calls, follow up on quotes, and get you more reviews — 24/7, in your voice.">
+  <meta name="keywords" content="AI answering service, plumber AI assistant, HVAC missed calls, local business automation, AI receptionist">
+  <link rel="canonical" href="https://balva.ai">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Balva — Every Customer, Answered.">
+  <meta property="og:description" content="The AI-powered front-of-house for local service businesses. Never miss another call.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://balva.ai">
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
-    :root {
-      --green:   #0F6E56;
-      --green-l: #13896a;
-      --green-d: #0a4f3e;
-      --cream:   #F5F0E8;
-      --gold:    #C9A84C;
-      --white:   #FAFAF8;
-    }
-
-    html, body {
-      height: 100%;
-      background: var(--green-d);
-      color: var(--cream);
-      font-family: 'DM Mono', monospace;
-      overflow: hidden;
-    }
-
-    /* ── noise grain overlay ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      background-size: 200px 200px;
-      opacity: 0.35;
-      pointer-events: none;
-    }
-
-    /* ── animated radial glow ── */
-    .glow {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(90px);
-      pointer-events: none;
-      z-index: 0;
-    }
-    .glow-1 {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(19,137,106,0.45) 0%, transparent 70%);
-      top: -100px; left: -150px;
-      animation: drift1 14s ease-in-out infinite alternate;
-    }
-    .glow-2 {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
-      bottom: -80px; right: -80px;
-      animation: drift2 18s ease-in-out infinite alternate;
-    }
-    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px, 80px); } }
-    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px,-60px); } }
-
-    /* ── thin horizontal rule decoration ── */
-    .rule {
-      position: fixed;
-      left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(245,240,232,0.12) 30%, rgba(201,168,76,0.3) 50%, rgba(245,240,232,0.12) 70%, transparent 100%);
-    }
-    .rule-top    { top: 48px; }
-    .rule-bottom { bottom: 48px; }
-
-    /* ── corner marks ── */
-    .corner {
-      position: fixed;
-      width: 18px; height: 18px;
-      border-color: rgba(201,168,76,0.5);
-      border-style: solid;
-      opacity: 0;
-      animation: fadeIn 1.2s ease forwards;
-      animation-delay: 1s;
-    }
-    .corner-tl { top: 28px;    left: 28px;   border-width: 1px 0 0 1px; }
-    .corner-tr { top: 28px;    right: 28px;  border-width: 1px 1px 0 0; }
-    .corner-bl { bottom: 28px; left: 28px;   border-width: 0 0 1px 1px; }
-    .corner-br { bottom: 28px; right: 28px;  border-width: 0 1px 1px 0; }
-
-    /* ── main layout ── */
-    .stage {
-      position: relative; z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 80px 24px;
-      text-align: center;
-    }
-
-    /* ── label ── */
-    .label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.32em;
-      text-transform: uppercase;
-      color: var(--gold);
-      opacity: 0;
-      transform: translateY(8px);
-      animation: rise 0.9s ease forwards;
-      animation-delay: 0.2s;
-    }
-
-    /* ── wordmark ── */
-    .wordmark {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 300;
-      font-size: clamp(96px, 18vw, 176px);
-      line-height: 0.88;
-      letter-spacing: -0.02em;
-      color: var(--cream);
-      position: relative;
-      display: inline-block;
-      margin: 18px 0 4px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: rise 1.1s cubic-bezier(0.16,1,0.3,1) forwards;
-      animation-delay: 0.45s;
-    }
-    /* subtle text shadow depth */
-    .wordmark span {
-      position: relative;
-      display: inline-block;
-    }
-    .wordmark span::after {
-      content: attr(data-text);
-      position: absolute;
-      inset: 0;
-      color: var(--gold);
-      opacity: 0.12;
-      transform: translate(2px, 3px);
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* ── dot accent ── */
-    .dot {
-      display: inline-block;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--gold);
-      margin-left: 4px;
-      vertical-align: super;
-      position: relative; top: -8px;
-      opacity: 0;
-      animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
-      animation-delay: 1.3s;
-    }
-
-    /* ── tagline ── */
-    .tagline-wrap {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 22px 0 0;
-      opacity: 0;
-      transform: translateY(8px);
-      animation: rise 0.9s ease forwards;
-      animation-delay: 0.85s;
-    }
-    .line { flex: 1; height: 1px; background: rgba(245,240,232,0.2); min-width: 40px; max-width: 80px; }
-    .tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(18px, 2.5vw, 24px);
-      letter-spacing: 0.04em;
-      color: rgba(245,240,232,0.75);
-    }
-
-    /* ── full name ── */
-    .fullname {
-      font-family: 'DM Mono', monospace;
-      font-size: clamp(9px, 1.1vw, 11px);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.45);
-      margin-top: 10px;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-      animation-delay: 1.1s;
-    }
-
-    /* ── divider ── */
-    .divider {
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(180deg, rgba(201,168,76,0.5) 0%, transparent 100%);
-      margin: 40px auto 0;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-      animation-delay: 1.4s;
-    }
-
-    /* ── status pill ── */
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 32px;
-      padding: 8px 20px;
-      border: 1px solid rgba(201,168,76,0.25);
-      border-radius: 100px;
-      background: rgba(15,110,86,0.25);
-      backdrop-filter: blur(12px);
-      opacity: 0;
-      transform: translateY(6px);
-      animation: rise 0.8s ease forwards;
-      animation-delay: 1.6s;
-    }
-    .pulse {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--gold);
-      position: relative;
-    }
-    .pulse::before {
-      content: '';
-      position: absolute; inset: -4px;
-      border-radius: 50%;
-      border: 1px solid var(--gold);
-      opacity: 0;
-      animation: ripple 2.2s ease-out infinite;
-    }
-    @keyframes ripple {
-      0%   { transform: scale(0.6); opacity: 0.6; }
-      100% { transform: scale(2.2); opacity: 0; }
-    }
-    .status-text {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.6);
-    }
-
-    /* ── footer note ── */
-    .footer-note {
-      position: fixed;
-      bottom: 36px;
-      left: 50%; transform: translateX(-50%);
-      font-size: 9px;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.25);
-      white-space: nowrap;
-      opacity: 0;
-      animation: fadeIn 1s ease forwards;
-      animation-delay: 2s;
-    }
-
-    /* ── keyframes ── */
-    @keyframes rise {
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-    @keyframes pop {
-      to { opacity: 1; }
-    }
-
-    /* ── responsive ── */
-    @media (max-width: 480px) {
-      .rule-top    { top: 32px; }
-      .rule-bottom { bottom: 32px; }
-      .corner-tl, .corner-tr { top: 16px; }
-      .corner-bl, .corner-br { bottom: 16px; }
-      .corner-tl, .corner-bl { left: 16px; }
-      .corner-tr, .corner-br { right: 16px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-
-  <div class="rule rule-top"></div>
-  <div class="rule rule-bottom"></div>
-
-  <div class="corner corner-tl"></div>
-  <div class="corner corner-tr"></div>
-  <div class="corner corner-bl"></div>
-  <div class="corner corner-br"></div>
-
-  <main class="stage">
-    <p class="label">balva.ai</p>
-
-    <h1 class="wordmark">
-      <span data-text="Balva">Balva</span><span class="dot"></span>
-    </h1>
-
-    <div class="tagline-wrap">
-      <div class="line"></div>
-      <p class="tagline">Every customer, answered.</p>
-      <div class="line"></div>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="/" class="nav__logo">Balva</a>
+      <div class="nav__links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/blog/">Blog</a>
+        <a href="#contact" class="btn btn--small">Get a Free Demo</a>
+      </div>
     </div>
+  </nav>
 
-    <p class="fullname">Business Automation Live Virtual Assistant</p>
-
-    <div class="divider"></div>
-
-    <div class="status">
-      <span class="pulse"></span>
-      <span class="status-text">Something great is coming soon</span>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__inner">
+      <p class="hero__label">For local service businesses</p>
+      <h1 class="hero__title">Every customer,<br><span class="hero__accent">answered.</span></h1>
+      <p class="hero__subtitle">Balva catches your missed calls, follows up on your quotes, and gets you more reviews — 24/7, in your voice. You focus on the work.</p>
+      <div class="hero__cta">
+        <a href="#contact" class="btn btn--primary">Try Free for 30 Days</a>
+        <p class="hero__note">No credit card. No setup fee. Cancel anytime.</p>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <p class="footer-note">© 2025 Balva AI &nbsp;·&nbsp; balva.ai</p>
+  <!-- PROBLEM -->
+  <section class="problem">
+    <div class="section__inner">
+      <div class="problem__stat">
+        <span class="problem__number">$54,000</span>
+        <p class="problem__label">Lost per year by a business that misses just 3 calls a week at $350 average job value.</p>
+      </div>
+      <p class="problem__text">You're on a job. The phone rings. You can't pick up. The customer calls the next name on Google. That's revenue you earned but never collected. Balva makes sure it never happens again.</p>
+    </div>
+  </section>
 
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="how">
+    <div class="section__inner">
+      <h2 class="section__title">How Balva works</h2>
+      <p class="section__subtitle">You keep your number. We add a safety net underneath it.</p>
+      <div class="how__grid">
+        <div class="how__step">
+          <span class="how__number">01</span>
+          <h3>You miss a call</h3>
+          <p>A customer calls and you can't pick up. Instead of voicemail, Balva responds instantly via text — warm, on-brand, and ready to help.</p>
+        </div>
+        <div class="how__step">
+          <span class="how__number">02</span>
+          <h3>AI gathers the details</h3>
+          <p>Balva has a natural conversation with your customer. It collects their name, what they need, their address, and how urgent it is — all in your voice.</p>
+        </div>
+        <div class="how__step">
+          <span class="how__number">03</span>
+          <h3>You get a qualified lead</h3>
+          <p>You see exactly who called, what they need, and how urgent it is. Emergencies alert you immediately. Everything else waits for your morning summary.</p>
+        </div>
+        <div class="how__step">
+          <span class="how__number">04</span>
+          <h3>Balva follows up automatically</h3>
+          <p>Quote sent? Balva checks in 48 hours later. Job complete? Balva asks for a Google review. Appointment tomorrow? Balva sends a reminder. Automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="features">
+    <div class="section__inner">
+      <h2 class="section__title">What Balva handles for you</h2>
+      <div class="features__grid">
+        <div class="feature">
+          <div class="feature__icon">📱</div>
+          <h3>24/7 SMS & Chat Response</h3>
+          <p>Customers who text or chat at any hour get an immediate, warm reply. No voicemail. No wait.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">📞</div>
+          <h3>Missed Call Auto-Text</h3>
+          <p>Call goes unanswered? An automatic text fires within seconds. The AI takes the conversation from there.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">🔄</div>
+          <h3>Quote Follow-Up</h3>
+          <p>48 hours after a quote is sent, Balva checks in automatically. This single feature recovers 20–30% of unconverted quotes.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">⭐</div>
+          <h3>Review Requests</h3>
+          <p>A direct Google review link texted after every completed job. Turn 1–2 reviews per month into 10+.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">🗓️</div>
+          <h3>Appointment Reminders</h3>
+          <p>Auto-text the day before and morning of. Reduce no-shows and wasted drive time.</p>
+        </div>
+        <div class="feature">
+          <div class="feature__icon">🚨</div>
+          <h3>Urgency Detection</h3>
+          <p>"My pipe burst" triggers an instant alert to your phone. You'll know about emergencies before you check your messages.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF -->
+  <section class="proof">
+    <div class="section__inner">
+      <h2 class="section__title">Built for businesses like yours</h2>
+      <div class="proof__grid">
+        <div class="proof__card">
+          <p class="proof__type">Plumbing & HVAC</p>
+          <p class="proof__desc">Burst pipes at 2am? Furnace out in January? Balva responds immediately, gathers the address, and alerts you — before the customer calls someone else.</p>
+        </div>
+        <div class="proof__card">
+          <p class="proof__type">Auto Repair</p>
+          <p class="proof__desc">Customer texts a check-engine photo at 9pm. Balva asks the right questions and has a qualified lead waiting for you at 7am.</p>
+        </div>
+        <div class="proof__card">
+          <p class="proof__type">Restaurants</p>
+          <p class="proof__desc">After-hours reservation requests, catering inquiries, event questions — all handled automatically, in your voice.</p>
+        </div>
+        <div class="proof__card">
+          <p class="proof__type">Salons & Spas</p>
+          <p class="proof__desc">Appointment reminders that reduce no-shows. Review requests that fill your Google profile. Follow-ups that keep clients coming back.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="pricing">
+    <div class="section__inner">
+      <h2 class="section__title">Simple pricing. Real margins.</h2>
+      <p class="section__subtitle">One saved job pays for 6 months of Balva.</p>
+      <div class="pricing__grid">
+        <div class="pricing__card">
+          <p class="pricing__tier">Starter</p>
+          <p class="pricing__price">$197<span>/mo</span></p>
+          <p class="pricing__for">Solo operators, 1–3 staff</p>
+          <ul class="pricing__list">
+            <li>24/7 SMS & chat response</li>
+            <li>Missed call auto-text</li>
+            <li>Quote follow-up (48hr)</li>
+            <li>Appointment reminders</li>
+            <li>Post-service check-in</li>
+            <li>Review request automation</li>
+            <li>Negative feedback interception</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Start Free Trial</a>
+        </div>
+        <div class="pricing__card pricing__card--featured">
+          <div class="pricing__badge">Most Popular</div>
+          <p class="pricing__tier">Growth</p>
+          <p class="pricing__price">$397<span>/mo</span></p>
+          <p class="pricing__for">Growing businesses, 3–8 staff</p>
+          <ul class="pricing__list">
+            <li>Everything in Starter, plus:</li>
+            <li>Seasonal engagement campaigns</li>
+            <li>Recurring customer reminders</li>
+            <li>Post-service job summaries</li>
+            <li>Monthly performance report</li>
+          </ul>
+          <a href="#contact" class="btn btn--primary">Start Free Trial</a>
+        </div>
+        <div class="pricing__card">
+          <p class="pricing__tier">Pro</p>
+          <p class="pricing__price">$697<span>/mo</span></p>
+          <p class="pricing__for">Established businesses, 5+ staff</p>
+          <ul class="pricing__list">
+            <li>Everything in Growth, plus:</li>
+            <li>Upsell & cross-sell automation</li>
+            <li>Referral program automation</li>
+            <li>Monthly strategy review call</li>
+          </ul>
+          <a href="#contact" class="btn btn--outline">Start Free Trial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section id="contact" class="contact">
+    <div class="section__inner">
+      <h2 class="section__title">See it work for your business</h2>
+      <p class="section__subtitle">Text our demo number or leave your info — we'll show you Balva responding as <em>your</em> business in 5 minutes.</p>
+      <form class="contact__form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="text" name="business" placeholder="Business name" required>
+        <input type="tel" name="phone" placeholder="Phone number" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <select name="business_type" required>
+          <option value="" disabled selected>Business type</option>
+          <option value="plumbing">Plumbing</option>
+          <option value="hvac">HVAC</option>
+          <option value="electrical">Electrical</option>
+          <option value="general-contracting">General Contracting</option>
+          <option value="auto-repair">Auto Repair</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="salon">Salon / Spa</option>
+          <option value="other">Other</option>
+        </select>
+        <button type="submit" class="btn btn--primary btn--full">Get My Free Demo</button>
+        <p class="contact__note">30 days free. No credit card. We set everything up for you.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__brand">
+        <p class="footer__logo">Balva</p>
+        <p class="footer__tagline">Every customer, answered.</p>
+      </div>
+      <div class="footer__links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="/blog/">Blog</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <p class="footer__copy">&copy; 2026 Balva. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/nav.js"></script>
 </body>
 </html>
